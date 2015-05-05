@@ -7,6 +7,7 @@ class EmailsController < ApplicationController
   # GET /emails/new
   def new
     @domain = domain
+    @user = current_user
   end
 
   # POST /emails
@@ -14,7 +15,7 @@ class EmailsController < ApplicationController
   def create
     # Remove old email
     if current_user.forward_address?
-      logger.debug "Removing old email forwarding: #{current_user.forward_address}"
+      logger.info { "Removing old email forwarding: #{current_user.forward_address}" }
       @email_server.delete(current_user.forward_address)
     end
 
@@ -24,7 +25,7 @@ class EmailsController < ApplicationController
     rescue LibXML::XML::XMLRPC::RemoteCallError => e
       respond_to do |format|
         error = Gandi::parse_error(e.message)
-        logger.debug "Email forwarding creation error: #{error}"
+        logger.info { "Email forwarding creation error: #{error}" }
         format.html { redirect_to root_path, alert: "Couldn't create email forwarding '#{email_params[:forward_destination]}': #{error}." }
         format.json { head :no_content, status: :unprocessable_entity }
       end
@@ -32,10 +33,10 @@ class EmailsController < ApplicationController
     end
 
     msg = "Email forwarding created from #{email_params[:forward_address]}@#{@email_domain} to #{email_params[:forward_destination]}"
-    logger.info msg
+    logger.info { msg }
 
     # Update user with new email
-    logger.debug "Updating user with new email forwarding: #{email_params.inspect}"
+    logger.info { "Updating user with new email forwarding: #{email_params.inspect}" }
     current_user.update(email_params)
 
     respond_to do |format|
