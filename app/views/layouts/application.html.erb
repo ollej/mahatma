@@ -40,11 +40,16 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span9">
+        <h1><%= content_for?(:title) ? yield(:title) : 'Mahatma' %></h1>
+        <div class="span9 well">
           <%= bootstrap_flash %>
           <%= yield %>
         </div>
       </div><!--/row-->
+
+      <div class="row-fluid">
+        <%= render 'shared/links' %>
+      </div>
 
       <footer>
       <p><small>&copy; <a href="http://github.com/ollej">Olle Johansson</a> 2015</small></p>

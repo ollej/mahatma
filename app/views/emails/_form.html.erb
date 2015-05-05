@@ -5,6 +5,7 @@
       placeholder: 'Forwarding Address', autocapitalize: false, autocorrect: false %>
     <span class="add-on">@<%= @email_domain %></span>
   </div>
+  <%= label_tag :destination, nil, class: 'hidden-desktop hidden-phone hidden-tablet' %>
   <div class="input-append">
     <%= email_field_tag :forward_destination, current_user[:forward_destination], class: 'form-control',
       placeholder: 'Destination Email', autocapitalize: false, autocorrect: false %>
